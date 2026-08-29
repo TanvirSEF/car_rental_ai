@@ -1304,8 +1304,10 @@ One car can have multiple booking records.
 
 # 39. Suggested Project Folder Structure
 
+The project uses a root-level structure (no `src/` directory), matching the shadcn/ui setup used in this repository.
+
 ```text
-src
+/ (project root)
 │
 ├── app
 │   │
