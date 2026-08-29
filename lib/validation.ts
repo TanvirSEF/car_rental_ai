@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 import { BOOKING_STATUSES } from "@/types/booking"
+import { CAR_STATUSES } from "@/types/car"
 
 /**
  * Zod schemas for API input validation (PRD §53).
@@ -18,6 +19,10 @@ export const createBookingSchema = z.object({
 
 export const updateBookingStatusSchema = z.object({
   status: z.enum(BOOKING_STATUSES),
+})
+
+export const updateCarStatusSchema = z.object({
+  status: z.enum(CAR_STATUSES),
 })
 
 export const carFilterSchema = z.object({
