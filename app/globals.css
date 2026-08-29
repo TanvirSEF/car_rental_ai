@@ -151,3 +151,10 @@
     background-color: #fbfbfb;
   }
 }
+
+/* Customer website font (Plus Jakarta Sans — from the Figma wireframe) */
+@layer utilities {
+  .font-jakarta {
+    font-family: var(--font-jakarta), var(--font-sans), ui-sans-serif, sans-serif;
+  }
+}

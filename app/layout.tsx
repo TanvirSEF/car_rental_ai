@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono, Inter, Nunito } from "next/font/google"
+import { Geist, Geist_Mono, Inter, Nunito, Plus_Jakarta_Sans } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -16,6 +16,11 @@ const nunito = Nunito({
   variable: "--font-nunito",
 })
 
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,7 +30,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable, nunito.variable)}
+      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable, nunito.variable, jakarta.variable)}
     >
       <body>
         <ThemeProvider>{children}</ThemeProvider>
