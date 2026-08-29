@@ -1,3 +1,4 @@
+import { triggerBookingCreated } from "@/lib/automation"
 import { fail, ok } from "@/lib/api"
 import { createBooking, listBookings } from "@/lib/db/bookings"
 import { createBookingSchema } from "@/lib/validation"
@@ -42,6 +43,9 @@ export async function POST(request: Request) {
       startDate: startDate.toISOString().slice(0, 10),
       endDate: endDate.toISOString().slice(0, 10),
     })
+
+    // booking.created event — email + webhook run in the background (PRD §33)
+    triggerBookingCreated(booking)
 
     return ok({ bookingId: booking.id, status: booking.status }, 201)
   } catch (error) {
