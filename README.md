@@ -4,23 +4,33 @@ A full-stack car rental platform with a customer-facing website, an analytics-dr
 
 **Live URL:** https://car-rental-ai-three.vercel.app
 
+**Admin credentials:**
+- Email: `admin@digitalpylot.com`
+- Password: `Pylot@2026Admin`
+
 ## Features
 
 ### Customer Front-End
-- Vehicle catalog with live data, category/brand/price/transmission/seat filters
-- Search interface with location and date pick-up/return selection
-- Booking modal with dynamic price preview (final price is always recalculated server-side)
-- AI-powered "Find My Perfect Car" recommendation
+- Hero section with live search (location, category, pick-up date, return date)
+- Vehicle catalog at `/cars` with URL-param filters (category, transmission, seats, price sort)
+- Booking modal with dynamic price preview — final price always recalculated server-side
+- AI-powered "Find My Perfect Car" — natural language → GPT-4o-mini → validated inventory cards
+- How It Works, Why Choose Us, Testimonials carousel (prev/next arrows + dot pagination)
 - Fully responsive across desktop, tablet, and mobile
 
 ### Admin Dashboard (`/admin`)
-- KPI stat cards, revenue trend chart, fleet category mix, top vehicles
-- Bookings table with status management (`pending → approved → active → completed/cancelled`)
-- Fleet management with vehicle status control (`available / rented / maintenance`)
-- Cookie-based session auth with rate-limited login; all admin pages and admin APIs are guarded
+- KPI stat cards: Weekly Earning, Total Sales, Purchased Goods — live from database
+- Sales Analytics chart with dynamic year selector dropdown (Recharts area chart)
+- Sales by Countries with interactive world map — region hotspots, timeframe dropdown
+- Top Vehicles and Recent Transactions panels
+- Bookings table — status filter pills + text search (customer name / email / vehicle)
+- Fleet table — text search (brand / name / category) + inline status control
+- Add Vehicle modal from Fleet page
+- Settings page with 4 tabs: General, Fleet Policies, Notifications, Account & Security
+- Cookie-based session auth with rate-limited login; all admin pages and APIs are guarded
 
 ### AI Feature
-`POST /api/ai/recommend` sends the customer's request along with the **real available inventory** to `gpt-4o-mini` (JSON mode). Every recommended `carId` is validated against the database before being returned, so the model can never invent vehicles or prices.
+`POST /api/ai/recommend` sends the customer's request along with the real available inventory to `gpt-4o-mini` (JSON mode). Every recommended `carId` is validated against the database before being returned — the model can never invent vehicles or prices.
 
 ### Automation
 Creating a booking fires a `booking.created` event in the background:
@@ -33,10 +43,11 @@ Both run non-blocking; a failure in one channel never affects the other or the b
 
 - **Framework:** Next.js 16 (App Router), React 19, TypeScript
 - **Styling:** Tailwind CSS v4
-- **Database:** Supabase (PostgreSQL) accessed exclusively from the server via the service role key — RLS enabled, no anon access
+- **Database:** Supabase (PostgreSQL) — server-only via service role key, RLS enabled
 - **Validation:** Zod on every API input
 - **AI:** OpenAI (`gpt-4o-mini`)
 - **Email:** Nodemailer (SMTP)
+- **Charts:** Recharts
 
 ## Getting Started
 
@@ -82,13 +93,15 @@ Booking rules enforced server-side: vehicle must exist and not be in maintenance
 ## Project Structure
 
 ```
-app/(customer)/        customer pages (home, cars)
-app/admin/             login + protected dashboard (overview, fleet, bookings)
+app/(customer)/        customer pages (home, /cars listing)
+app/admin/             login + protected dashboard (overview, fleet, bookings, settings)
 app/api/               route handlers
-components/            customer / dashboard / admin UI components
+components/customer/   Hero, Navbar, SearchCard, VehicleCard, BookingModal, AIRecommendation…
+components/dashboard/  StatCards, RevenueChart, SalesByCountries, BookingsTable, FleetTable…
 lib/db/                data access + business logic
 lib/ai/                recommendation engine
 lib/automation/        email + webhook dispatch
+lib/constants/         dashboard mock constants (regions, chart baseline)
 supabase/              schema.sql + seed.sql
 scripts/db-setup.mjs   database bootstrap script
 ```
