@@ -1,13 +1,13 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { CalendarRange, ChevronUp, RefreshCw } from "lucide-react"
+import { Calendar, ChevronUp, RotateCcw } from "lucide-react"
 
 export function TopBar({
-  title,
-  subtitle,
+  title = "Hi Mike Witzel,",
+  subtitle = "here's what's happening with your store today.",
 }: {
-  title: string
+  title?: string
   subtitle?: string
 }) {
   const router = useRouter()
@@ -21,32 +21,37 @@ export function TopBar({
       year: "numeric",
     })
 
-  const roundBtn =
-    "flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full border border-line text-navy transition-colors hover:bg-brand-soft"
+  const actionBtn =
+    "flex h-[36px] w-[36px] shrink-0 items-center justify-center rounded-lg border border-line bg-white text-ink-muted transition-colors hover:bg-page hover:text-navy"
 
   return (
-    <header className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-white px-6 py-5">
-      <div>
-        <h1 className="text-lg font-bold text-navy sm:text-2xl">👋 {title}</h1>
-        {subtitle && <p className="mt-1 text-sm text-ink-soft">{subtitle}</p>}
+    <header className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-white px-6 py-4 shadow-xs">
+      <div className="flex items-center gap-2">
+        <span className="text-xl">👋</span>
+        <h1 className="text-base font-bold text-navy sm:text-lg">
+          {title}{" "}
+          <span className="font-normal text-ink-muted text-sm sm:text-base">
+            {subtitle}
+          </span>
+        </h1>
       </div>
 
-      <div className="flex items-center gap-2.5">
-        <span className="flex h-[38px] items-center gap-2 rounded-full border border-line px-4 text-[15px] text-navy">
-          <CalendarRange size={15} className="text-navy" />
+      <div className="flex items-center gap-2">
+        <span className="flex h-[36px] items-center gap-2 rounded-lg border border-line bg-white px-3.5 text-xs font-semibold text-ink">
+          <Calendar size={14} className="text-ink-muted" />
           {fmt(weekAgo)} - {fmt(today)}
         </span>
         <button
           onClick={() => router.refresh()}
-          className={roundBtn}
+          className={actionBtn}
           aria-label="Refresh data"
           title="Refresh data"
         >
-          <RefreshCw size={15} />
+          <RotateCcw size={15} />
         </button>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className={roundBtn}
+          className={actionBtn}
           aria-label="Back to top"
           title="Back to top"
         >
@@ -56,3 +61,4 @@ export function TopBar({
     </header>
   )
 }
+

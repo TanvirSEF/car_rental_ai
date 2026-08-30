@@ -57,7 +57,10 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="mx-auto max-w-[1140px] space-y-6">
-      <TopBar title="Hi Admin, here's what's happening with your fleet today." />
+      <TopBar
+        title="Hi Mike Witzel,"
+        subtitle="here's what's happening with your store today."
+      />
 
       <StatCards
         monthlyRevenue={last}
