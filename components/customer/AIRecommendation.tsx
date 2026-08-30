@@ -6,12 +6,6 @@ import { LoaderCircle, Sparkles } from "lucide-react"
 import { VehicleCard } from "@/components/customer/VehicleCard"
 import type { Car } from "@/types/car"
 
-/**
- * "Find My Perfect Car" — the primary AI feature (PRD §16).
- * Natural-language request → POST /api/ai/recommend →
- * validated inventory cards with the AI's reasoning.
- */
-
 const EXAMPLES = [
   "I need a car for a family trip with 5 people",
   "I want an affordable car for city travel",

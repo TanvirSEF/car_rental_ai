@@ -1,24 +1,31 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { Search } from "lucide-react"
 
 import { StatusBadge } from "@/components/dashboard/StatusBadge"
 import { BOOKING_STATUSES, type BookingStatus, type BookingWithCar } from "@/types/booking"
 
-/**
- * Booking management table (PRD §25) — status filter + inline
- * status updates through PATCH /api/bookings/:id.
- */
 export function BookingsTable({ initialBookings }: { initialBookings: BookingWithCar[] }) {
   const [bookings, setBookings] = useState(initialBookings)
   const [filter, setFilter] = useState<string>("all")
+  const [search, setSearch] = useState("")
   const [savingId, setSavingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const visible = useMemo(
-    () => (filter === "all" ? bookings : bookings.filter((b) => b.status === filter)),
-    [bookings, filter]
-  )
+  const visible = useMemo(() => {
+    let list = filter === "all" ? bookings : bookings.filter((b) => b.status === filter)
+    if (search.trim()) {
+      const q = search.toLowerCase()
+      list = list.filter(
+        (b) =>
+          b.customer_name.toLowerCase().includes(q) ||
+          b.customer_email.toLowerCase().includes(q) ||
+          (b.cars && `${b.cars.brand} ${b.cars.name}`.toLowerCase().includes(q))
+      )
+    }
+    return list
+  }, [bookings, filter, search])
 
   async function changeStatus(id: string, status: BookingStatus) {
     setSavingId(id)
@@ -44,8 +51,19 @@ export function BookingsTable({ initialBookings }: { initialBookings: BookingWit
 
   return (
     <div className="overflow-hidden rounded-lg border border-line bg-white">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
+      <div className="flex flex-col gap-3 border-b border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-bold text-ink">Booking Management</h2>
+
+        <div className="relative w-full sm:w-64">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search customer or vehicle…"
+            className="h-9 w-full rounded-lg border border-line bg-white pl-8 pr-3 text-sm text-ink outline-none focus:border-brand"
+          />
+        </div>
+
         <div className="flex flex-wrap gap-2">
           {["all", ...BOOKING_STATUSES].map((status) => (
             <button
@@ -85,7 +103,7 @@ export function BookingsTable({ initialBookings }: { initialBookings: BookingWit
             {visible.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-5 py-8 text-center text-ink-soft">
-                  No bookings found for this filter.
+                  No bookings found.
                 </td>
               </tr>
             )}
@@ -112,9 +130,7 @@ export function BookingsTable({ initialBookings }: { initialBookings: BookingWit
                     <select
                       value={booking.status}
                       disabled={savingId === booking.id}
-                      onChange={(e) =>
-                        changeStatus(booking.id, e.target.value as BookingStatus)
-                      }
+                      onChange={(e) => changeStatus(booking.id, e.target.value as BookingStatus)}
                       className="rounded-md border border-line bg-white px-2 py-1 text-xs capitalize text-ink disabled:opacity-50"
                       aria-label="Change booking status"
                     >

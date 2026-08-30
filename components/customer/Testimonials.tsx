@@ -3,11 +3,6 @@
 import { useState } from "react"
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 
-/**
- * Testimonials Carousel (PRD & Wireframe: "Trusted by thousands of happy customers")
- * Supports multi-page review sliding, pagination dots, and arrow navigation.
- */
-
 const REVIEW_PAGES = [
   [
     {
@@ -106,8 +101,7 @@ export function Testimonials() {
         </p>
       </div>
 
-      {/* Review Cards Grid with Animation */}
-      <div className="grid gap-6 md:grid-cols-3 transition-all duration-300">
+      <div className="grid gap-6 transition-all duration-300 md:grid-cols-3">
         {currentReviews.map((review) => (
           <figure
             key={review.name}
@@ -132,7 +126,7 @@ export function Testimonials() {
               </div>
 
               <blockquote className="text-sm leading-relaxed text-ink-soft">
-                “{review.quote}”
+                &ldquo;{review.quote}&rdquo;
               </blockquote>
             </div>
 
@@ -153,24 +147,21 @@ export function Testimonials() {
         ))}
       </div>
 
-      {/* Navigation Controls & Pagination Dots */}
       <div className="mt-10 flex items-center justify-center gap-4">
-        {/* Previous Button */}
         <button
           onClick={handlePrev}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-navy transition hover:border-brand hover:bg-brand-soft hover:text-brand active:scale-95 cursor-pointer shadow-2xs"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-line text-navy shadow-2xs transition hover:border-brand hover:bg-brand-soft hover:text-brand active:scale-95"
           aria-label="Previous testimonials"
         >
           <ChevronLeft size={18} />
         </button>
 
-        {/* Pagination Dots */}
         <div className="flex items-center gap-2">
           {REVIEW_PAGES.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentPage(index)}
-              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+              className={`h-2.5 cursor-pointer rounded-full transition-all duration-300 ${
                 currentPage === index
                   ? "w-8 bg-navy"
                   : "w-2.5 bg-[#dde0e4] hover:bg-navy/50"
@@ -180,10 +171,9 @@ export function Testimonials() {
           ))}
         </div>
 
-        {/* Next Button */}
         <button
           onClick={handleNext}
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-navy transition hover:border-brand hover:bg-brand-soft hover:text-brand active:scale-95 cursor-pointer shadow-2xs"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-line text-navy shadow-2xs transition hover:border-brand hover:bg-brand-soft hover:text-brand active:scale-95"
           aria-label="Next testimonials"
         >
           <ChevronRight size={18} />

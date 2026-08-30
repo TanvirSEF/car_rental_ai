@@ -1,9 +1,5 @@
 import { CalendarCheck, MapPin, MousePointerClick } from "lucide-react"
 
-/**
- * How it works — three steps (wireframe: Choose Location,
- * Pick-up Date, Book your car with dashed arrows).
- */
 const STEPS = [
   {
     icon: MapPin,

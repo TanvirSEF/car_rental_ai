@@ -1,22 +1,29 @@
 "use client"
 
-import { useState } from "react"
-import { Car as CarIcon, Plus } from "lucide-react"
+import { useMemo, useState } from "react"
+import { Car as CarIcon, Plus, Search } from "lucide-react"
 
 import { AddVehicleModal } from "@/components/dashboard/AddVehicleModal"
 import { StatusBadge } from "@/components/dashboard/StatusBadge"
 import type { Car, CarStatus } from "@/types/car"
-
-/**
- * Fleet table with inline status updates (PRD §24).
- * Status change calls PATCH /api/cars/:id — optimistic UI, reverts on error.
- */
 
 export function FleetTable({ initialCars }: { initialCars: Car[] }) {
   const [cars, setCars] = useState(initialCars)
   const [savingId, setSavingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showAdd, setShowAdd] = useState(false)
+  const [search, setSearch] = useState("")
+
+  const visible = useMemo(() => {
+    if (!search.trim()) return cars
+    const q = search.toLowerCase()
+    return cars.filter(
+      (car) =>
+        car.brand.toLowerCase().includes(q) ||
+        car.name.toLowerCase().includes(q) ||
+        car.category.toLowerCase().includes(q)
+    )
+  }, [cars, search])
 
   async function changeStatus(id: string, status: CarStatus) {
     setSavingId(id)
@@ -52,10 +59,21 @@ export function FleetTable({ initialCars }: { initialCars: Car[] }) {
         />
       )}
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
+      <div className="flex flex-col gap-3 border-b border-line px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="flex items-center gap-2 text-lg font-bold text-ink">
           <CarIcon size={18} className="text-brand" /> Fleet Management
         </h2>
+
+        <div className="relative w-full sm:w-64">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search brand, name or category…"
+            className="h-9 w-full rounded-lg border border-line bg-white pl-8 pr-3 text-sm text-ink outline-none focus:border-brand"
+          />
+        </div>
+
         <div className="flex items-center gap-3">
           <span className="text-sm text-ink-soft">{cars.length} vehicles</span>
           <button
@@ -87,7 +105,14 @@ export function FleetTable({ initialCars }: { initialCars: Car[] }) {
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
-            {cars.map((car) => (
+            {visible.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-5 py-8 text-center text-ink-soft">
+                  No vehicles found.
+                </td>
+              </tr>
+            )}
+            {visible.map((car) => (
               <tr key={car.id} className="hover:bg-[#fafafa]">
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-3">

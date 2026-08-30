@@ -3,14 +3,9 @@ import { ShieldCheck } from "lucide-react"
 
 import { SearchCard } from "@/components/customer/SearchCard"
 
-/**
- * Hero section (wireframe: heading, sub-text, trust note,
- * CTA buttons, car image, search card).
- */
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-navy">
-      {/* soft decorative glow */}
       <div className="pointer-events-none absolute -right-40 -top-40 h-[500px] w-[500px] rounded-full bg-brand/20 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-52 -left-32 h-[420px] w-[420px] rounded-full bg-brand/10 blur-3xl" />
 
@@ -41,7 +36,7 @@ export function Hero() {
                 Booking Now
               </Link>
               <Link
-                href="/#ai-recommend"
+                href="/cars"
                 className="rounded-lg border border-white/25 px-7 py-3.5 font-jakarta font-bold text-white transition hover:border-brand hover:text-brand"
               >
                 See all cars
@@ -63,7 +58,6 @@ export function Hero() {
           </div>
         </div>
 
-        {/* search card overlapping the hero bottom */}
         <div className="mt-14 lg:-mb-24">
           <SearchCard />
         </div>

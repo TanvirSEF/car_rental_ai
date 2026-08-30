@@ -10,6 +10,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   LayoutDashboard,
+  Settings,
   Users,
   X,
   type LucideIcon,
@@ -46,7 +47,10 @@ const MENU_GROUPS: { label: string; items: MenuItem[] }[] = [
   },
   {
     label: "System",
-    items: [{ name: "Customer Site", href: "/", icon: Users }],
+    items: [
+      { name: "Settings", href: "/admin/settings", icon: Settings },
+      { name: "Customer Site", href: "/", icon: Users },
+    ],
   },
 ]
 

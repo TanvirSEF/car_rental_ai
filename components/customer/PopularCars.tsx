@@ -3,10 +3,7 @@ import Link from "next/link"
 import { VehicleCard } from "@/components/customer/VehicleCard"
 import type { Car } from "@/types/car"
 
-/**
- * Featured vehicles (wireframe: "Most popular car rental deals"
- * with category tabs and the card grid).
- */
+
 export function PopularCars({ cars }: { cars: Car[] }) {
   return (
     <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6">

@@ -1,10 +1,6 @@
 import Link from "next/link"
 import { Car } from "lucide-react"
 
-/**
- * Social brand icons as inline SVG — lucide-react no longer
- * ships brand icons, so these are drawn directly.
- */
 function FacebookIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -31,10 +27,6 @@ function TwitterIcon() {
   )
 }
 
-/**
- * Customer site footer (wireframe: logo + vision, link
- * columns, socials, copyright bar).
- */
 const COLUMNS = [
   {
     title: "About",
@@ -47,17 +39,17 @@ const COLUMNS = [
   {
     title: "Community",
     links: [
-      { label: "Events", href: "/#" },
-      { label: "Blog", href: "/#" },
-      { label: "Podcast", href: "/#" },
+      { label: "Events", href: "/#how-it-works" },
+      { label: "Blog", href: "/cars" },
+      { label: "Podcast", href: "/#testimonials" },
     ],
   },
   {
     title: "Socials",
     links: [
-      { label: "Discord", href: "/#" },
-      { label: "Instagram", href: "/#" },
-      { label: "Twitter", href: "/#" },
+      { label: "Discord", href: "https://discord.com", target: "_blank" },
+      { label: "Instagram", href: "https://instagram.com", target: "_blank" },
+      { label: "Twitter", href: "https://twitter.com", target: "_blank" },
     ],
   },
 ]
@@ -80,13 +72,15 @@ export function Footer() {
             </p>
             <div className="mt-6 flex gap-3">
               {[
-                { Icon: FacebookIcon, label: "Facebook" },
-                { Icon: InstagramIcon, label: "Instagram" },
-                { Icon: TwitterIcon, label: "Twitter" },
-              ].map(({ Icon, label }) => (
+                { Icon: FacebookIcon, label: "Facebook", href: "https://facebook.com" },
+                { Icon: InstagramIcon, label: "Instagram", href: "https://instagram.com" },
+                { Icon: TwitterIcon, label: "Twitter", href: "https://twitter.com" },
+              ].map(({ Icon, label, href }) => (
                 <a
                   key={label}
-                  href="#"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition hover:bg-brand"
                   aria-label={label}
                 >
@@ -118,11 +112,11 @@ export function Footer() {
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row">
           <p className="text-sm text-white/60">©2026 Digital Pylot. All rights reserved</p>
           <div className="flex gap-6 text-sm text-white/60">
-            <Link href="/#" className="transition hover:text-brand">
-              Terms & Condition
+            <Link href="/cars" className="transition hover:text-brand">
+              Terms &amp; Condition
             </Link>
-            <Link href="/#" className="transition hover:text-brand">
-              Privacy & Policy
+            <Link href="/cars" className="transition hover:text-brand">
+              Privacy &amp; Policy
             </Link>
           </div>
         </div>

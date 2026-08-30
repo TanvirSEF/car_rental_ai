@@ -1,8 +1,5 @@
 import { Headset, MapPinned, Tag } from "lucide-react"
 
-/**
- * Why choose us (wireframe: 3 feature rows with icon squares).
- */
 const FEATURES = [
   {
     icon: Headset,

@@ -6,9 +6,6 @@ import { Car, Menu, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-/**
- * Customer site navigation (wireframe: Nav Bar Top).
- */
 const LINKS = [
   { label: "Home", href: "/" },
   { label: "How it Works", href: "/#how-it-works" },
@@ -32,7 +29,6 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* desktop links */}
         <ul className="hidden items-center gap-8 lg:flex">
           {LINKS.map((link) => (
             <li key={link.label}>
@@ -61,7 +57,6 @@ export function Navbar() {
           </Link>
         </div>
 
-        {/* mobile toggle */}
         <button
           className="rounded-lg p-2 text-navy hover:bg-brand-soft lg:hidden"
           onClick={() => setOpen((v) => !v)}
@@ -71,7 +66,6 @@ export function Navbar() {
         </button>
       </nav>
 
-      {/* mobile menu */}
       <div className={cn("lg:hidden", open ? "block" : "hidden")}>
         <ul className="space-y-1 border-t border-line bg-white px-4 py-4">
           {LINKS.map((link) => (

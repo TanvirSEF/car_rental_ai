@@ -19,16 +19,11 @@ export default async function AdminOverviewPage() {
 
   const chart = stats.revenueChart
 
-
   const perCar = new Map<
     string,
-    {
-      bookings: number
-      revenue: number
-      image: string | null
-      pricePerDay: number
-    }
+    { bookings: number; revenue: number; image: string | null; pricePerDay: number }
   >()
+
   for (const booking of bookings) {
     if (booking.status === "cancelled" || !booking.cars) continue
     const key = `${booking.cars.brand}|${booking.cars.name}`
@@ -42,6 +37,7 @@ export default async function AdminOverviewPage() {
     entry.revenue += Number(booking.total_price)
     perCar.set(key, entry)
   }
+
   const topVehicles = [...perCar.entries()]
     .map(([key, value]) => {
       const [brand, name] = key.split("|")
@@ -82,9 +78,8 @@ export default async function AdminOverviewPage() {
 
       <footer className="flex flex-wrap items-center justify-between gap-2 px-1 py-2 text-sm text-ink-muted">
         <span>2026 © All Right Reserved</span>
-        <span>Designed & Developed by Tanvir Hasan</span>
+        <span>Designed &amp; Developed by Tanvir Hasan</span>
       </footer>
     </div>
   )
 }
-

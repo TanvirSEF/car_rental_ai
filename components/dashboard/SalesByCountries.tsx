@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useState, useRef, useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ChevronDown, TrendingUp } from "lucide-react"
 
 import {
@@ -24,7 +24,6 @@ export function SalesByCountries({
 
   const dataset = timeframeSales ?? DEFAULT_TIMEFRAME_SALES
 
-  // Close dropdown on click outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -44,16 +43,11 @@ export function SalesByCountries({
   const bookingOffset = (totalBookings ?? 0) > 0 ? (totalBookings ?? 0) * 12 : 0
   const activeSales = baseSales + bookingOffset
 
-
   return (
     <div className="flex flex-col justify-between rounded-2xl border border-line bg-white p-6 shadow-xs transition-shadow hover:shadow-sm">
-      {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-bold text-ink sm:text-lg">
-          Sales by Countries
-        </h2>
+        <h2 className="text-base font-bold text-ink sm:text-lg">Sales by Countries</h2>
 
-        {/* Timeframe Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button
             type="button"
@@ -72,7 +66,7 @@ export function SalesByCountries({
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 z-30 mt-1.5 w-32 rounded-xl border border-line bg-white py-1.5 shadow-lg animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute right-0 z-30 mt-1.5 w-32 animate-in fade-in zoom-in-95 rounded-xl border border-line bg-white py-1.5 shadow-lg duration-150">
               {Object.keys(dataset).map((tf) => (
                 <button
                   key={tf}
@@ -80,7 +74,7 @@ export function SalesByCountries({
                     setTimeframe(tf)
                     setDropdownOpen(false)
                   }}
-                  className={`flex w-full items-center px-3 py-1.5 text-xs text-left transition-colors ${
+                  className={`flex w-full items-center px-3 py-1.5 text-left text-xs transition-colors ${
                     timeframe === tf
                       ? "bg-brand-soft font-bold text-brand-active"
                       : "text-ink hover:bg-page"
@@ -94,9 +88,7 @@ export function SalesByCountries({
         </div>
       </div>
 
-      {/* World Map Container with Map Container.png */}
-      <div className="relative my-3 flex h-[210px] w-full items-center justify-center sm:h-[235px]">
-        {/* Exact Figma Map Image */}
+      <div className="relative my-3 flex h-[210px] w-full items-center justify-center overflow-hidden sm:h-[235px]">
         <div className="relative h-full w-full">
           <Image
             src="/Map Container.png"
@@ -107,7 +99,6 @@ export function SalesByCountries({
             className="object-contain"
           />
 
-          {/* Interactive Clickable / Hoverable Regions */}
           {Object.entries(DASHBOARD_REGIONS).map(([key, region]) => (
             <button
               key={key}
@@ -124,7 +115,6 @@ export function SalesByCountries({
           ))}
         </div>
 
-        {/* Dynamic Floating Tooltip Card matching Figma */}
         <div
           className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-1/2 drop-shadow-xl transition-all duration-300 ease-out"
           style={{
@@ -132,7 +122,7 @@ export function SalesByCountries({
             top: activeConfig.y,
           }}
         >
-          <div className="overflow-hidden rounded-xl border border-line/60 bg-white shadow-md min-w-[115px]">
+          <div className="min-w-[115px] overflow-hidden rounded-xl border border-line/60 bg-white shadow-md">
             <div className="bg-[#FF843E] px-5 py-1 text-center text-xs font-bold text-white shadow-2xs">
               {activeConfig.name}
             </div>
@@ -143,7 +133,6 @@ export function SalesByCountries({
         </div>
       </div>
 
-      {/* Footer Trend */}
       <div className="mt-1 flex items-center gap-1.5 border-t border-line/50 pt-3 text-xs text-ink-muted">
         <span className="flex items-center gap-0.5 font-bold text-emerald-500">
           <TrendingUp size={13} />
