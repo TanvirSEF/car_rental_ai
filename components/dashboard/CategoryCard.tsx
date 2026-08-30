@@ -1,23 +1,22 @@
-/**
- * Bookings by vehicle category (Figma: Sales by Countries card).
- * Simple horizontal bars — percentages come from the stats API.
- */
+import { TrendingUp } from "lucide-react"
 
 export function CategoryCard({
   categories,
 }: {
   categories: { category: string; count: number; percentage: number }[]
 }) {
+  const top = categories[0]
+
   return (
-    <div className="rounded-lg border border-line bg-white p-6">
+    <div className="flex flex-col rounded-2xl border border-line bg-white p-6">
       <div className="mb-5 flex items-center justify-between">
         <h2 className="text-lg font-bold text-ink">Bookings by Category</h2>
-        <span className="rounded border border-line px-3 py-1.5 text-sm text-ink-soft">
+        <span className="rounded-full border border-line px-3.5 py-1.5 text-sm text-ink-soft">
           All Time
         </span>
       </div>
 
-      <ul className="space-y-4">
+      <ul className="flex-1 space-y-4">
         {categories.length === 0 && (
           <li className="text-sm text-ink-soft">No booking data yet.</li>
         )}
@@ -38,6 +37,18 @@ export function CategoryCard({
           </li>
         ))}
       </ul>
+
+      {top && (
+        <div className="mt-5 flex items-center gap-2 border-t border-line pt-4 text-sm">
+          <span className="flex items-center gap-1 font-bold text-success">
+            <TrendingUp size={14} />
+            {top.percentage}%
+          </span>
+          <span className="text-ink-soft">
+            of all bookings are {top.category} rentals
+          </span>
+        </div>
+      )}
     </div>
   )
 }

@@ -19,7 +19,7 @@ export interface Booking {
 
 /** Booking joined with its car (used by dashboard tables). */
 export interface BookingWithCar extends Booking {
-  cars: Pick<Car, "name" | "brand" | "category"> | null;
+  cars: Pick<Car, "name" | "brand" | "category" | "image_url" | "price_per_day"> | null;
 }
 
 export const BOOKING_STATUSES = ["pending", "approved", "active", "completed", "cancelled"] as const;

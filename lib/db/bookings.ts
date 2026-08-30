@@ -15,7 +15,7 @@ export function calcRentalDays(startDate: string, endDate: string): number {
 export async function listBookings(status?: string): Promise<BookingWithCar[]> {
   let query = getSupabase()
     .from("bookings")
-    .select("*, cars(name, brand, category)")
+    .select("*, cars(name, brand, category, image_url, price_per_day)")
     .order("created_at", { ascending: false })
 
   if (status) query = query.eq("status", status)

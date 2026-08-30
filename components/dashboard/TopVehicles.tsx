@@ -1,25 +1,26 @@
-/**
- * Top vehicles list (Figma: Best Seller card — ranked product rows).
- */
+import Link from "next/link"
 
 export interface TopVehicle {
   name: string
   brand: string
   category: string
+  image: string | null
+  pricePerDay: number
   bookings: number
   revenue: number
 }
 
 export function TopVehicles({ vehicles }: { vehicles: TopVehicle[] }) {
-  const max = Math.max(...vehicles.map((v) => v.bookings), 1)
-
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-line bg-white">
-      <div className="flex items-center justify-between border-b border-line px-5 py-4">
+    <div className="flex flex-col overflow-hidden rounded-2xl border border-line bg-white">
+      <div className="flex items-center justify-between px-5 py-4">
         <h2 className="text-lg font-bold text-ink">Top Vehicles</h2>
-        <span className="rounded border border-line px-3 py-1.5 text-xs font-semibold text-ink">
-          By Bookings
-        </span>
+        <Link
+          href="/admin/fleet"
+          className="rounded-full border border-line px-4 py-1.5 text-xs font-semibold text-ink hover:bg-brand-soft"
+        >
+          View All
+        </Link>
       </div>
 
       <ul className="flex-1 divide-y divide-line">
@@ -28,29 +29,37 @@ export function TopVehicles({ vehicles }: { vehicles: TopVehicle[] }) {
             No booking data yet.
           </li>
         )}
-        {vehicles.map((vehicle, index) => (
-          <li key={`${vehicle.brand}-${vehicle.name}`} className="px-5 py-3">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-soft text-xs font-bold text-brand-active">
-                  {index + 1}
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-ink">
-                    {vehicle.brand} {vehicle.name}
-                  </p>
-                  <p className="text-xs text-ink-soft">
-                    {vehicle.category} · {vehicle.bookings} bookings · $
-                    {vehicle.revenue.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-              <div className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-[#f2f2f2] sm:block">
-                <div
-                  className="h-full rounded-full bg-brand"
-                  style={{ width: `${(vehicle.bookings / max) * 100}%` }}
+        {vehicles.map((vehicle) => (
+          <li
+            key={`${vehicle.brand}-${vehicle.name}`}
+            className="flex items-center gap-3 px-5 py-3.5"
+          >
+            <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-brand-soft">
+              {vehicle.image ? (
+                <img
+                  src={vehicle.image}
+                  alt={`${vehicle.brand} ${vehicle.name}`}
+                  className="h-full w-full object-cover"
                 />
-              </div>
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-xs font-bold text-brand">
+                  {vehicle.brand.slice(0, 2).toUpperCase()}
+                </div>
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[15px] font-semibold text-ink">
+                {vehicle.brand} {vehicle.name}
+              </p>
+              <p className="text-[13px] text-ink-muted">
+                ${vehicle.pricePerDay}/day
+              </p>
+            </div>
+            <div className="shrink-0 text-right">
+              <p className="text-xs text-ink-muted">Sales</p>
+              <p className="text-[15px] font-bold text-ink">
+                {vehicle.bookings}
+              </p>
             </div>
           </li>
         ))}
