@@ -2,7 +2,7 @@
 
 A full-stack car rental platform with a customer-facing website, an analytics-driven admin dashboard, an AI vehicle recommendation engine, and automated booking notifications.
 
-**Live URL:** https://your-app.vercel.app
+**Live URL:** https://car-rental-ai-three.vercel.app
 
 ## Features
 
