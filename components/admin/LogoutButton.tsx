@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { LoaderCircle, LogOut } from "lucide-react"
 
+import { cn } from "@/lib/utils"
+
 /**
  * Sidebar logout — clears the session cookie then
  * sends the admin back to the login page.
  */
-export function LogoutButton() {
+export function LogoutButton({ collapsed = false }: { collapsed?: boolean }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
@@ -27,14 +29,22 @@ export function LogoutButton() {
     <button
       onClick={handleLogout}
       disabled={loading}
-      className="flex h-[37px] w-full items-center gap-2.5 rounded-lg px-3 font-nunito text-sm font-medium text-ink hover:bg-red-50 hover:text-red-600 disabled:opacity-60"
+      title={collapsed ? "Logout" : undefined}
+      className={cn(
+        "flex items-center rounded-lg font-nunito text-sm font-medium text-ink transition-colors hover:bg-red-50 hover:text-red-600 disabled:opacity-60",
+        collapsed
+          ? "h-[42px] w-[42px] mx-auto justify-center"
+          : "h-[38px] w-full gap-2.5 px-3"
+      )}
+      aria-label="Logout"
     >
       {loading ? (
-        <LoaderCircle size={16} className="animate-spin text-ink-muted" />
+        <LoaderCircle size={18} className="animate-spin text-ink-muted" />
       ) : (
-        <LogOut size={16} className="text-ink-muted" />
+        <LogOut size={18} className="text-ink-muted" />
       )}
-      Logout
+      {!collapsed && <span>Logout</span>}
     </button>
   )
 }
+
