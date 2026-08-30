@@ -1,6 +1,6 @@
-import { CategoryCard } from "@/components/dashboard/CategoryCard"
 import { RecentBookings } from "@/components/dashboard/RecentBookings"
 import { RevenueChart } from "@/components/dashboard/RevenueChart"
+import { SalesByCountries } from "@/components/dashboard/SalesByCountries"
 import { StatCards } from "@/components/dashboard/StatCards"
 import { TopBar } from "@/components/dashboard/TopBar"
 import { TopVehicles } from "@/components/dashboard/TopVehicles"
@@ -18,10 +18,7 @@ export default async function AdminOverviewPage() {
   ])
 
   const chart = stats.revenueChart
-  const last = chart.at(-1)?.revenue ?? 0
-  const prev = chart.at(-2)?.revenue ?? 0
-  const revenueTrend =
-    prev === 0 ? (last > 0 ? 100 : 0) : Math.round(((last - prev) / prev) * 100)
+
 
   const perCar = new Map<
     string,
@@ -63,8 +60,8 @@ export default async function AdminOverviewPage() {
       />
 
       <StatCards
-        monthlyRevenue={last}
-        revenueTrend={revenueTrend}
+        monthlyRevenue={stats.monthlyRevenue}
+        revenueTrend={stats.revenueTrend}
         totalBookings={stats.totalBookings}
         fleetUtilization={stats.fleetUtilization}
         rentedCars={rentedCars}
@@ -77,13 +74,17 @@ export default async function AdminOverviewPage() {
 
       <div className="grid gap-6 xl:grid-cols-[1.9fr_1fr]">
         <RevenueChart data={chart} />
-        <CategoryCard categories={stats.categoryDistribution} />
+        <SalesByCountries
+          timeframeSales={stats.timeframeSales}
+          totalBookings={stats.totalBookings}
+        />
       </div>
 
       <footer className="flex flex-wrap items-center justify-between gap-2 px-1 py-2 text-sm text-ink-muted">
-        <span>2026 © Digital Pylot. All Right Reserved</span>
+        <span>2026 © All Right Reserved</span>
         <span>Designed & Developed by Tanvir Hasan</span>
       </footer>
     </div>
   )
 }
+

@@ -94,10 +94,11 @@ export function Header({
             ref={searchRef}
             type="text"
             placeholder="Search"
-            className="h-full w-full bg-transparent text-[13px] text-ink outline-none placeholder:text-ink-muted/70"
+            className="min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-ink-muted/70"
           />
-          <kbd className="flex h-[22px] items-center gap-0.5 rounded border border-line bg-[#f8f9fa] px-1.5 text-[10px] font-semibold text-navy">
-            ⌘ K
+          <kbd className="inline-flex h-[22px] shrink-0 items-center justify-center gap-1 whitespace-nowrap rounded-md border border-line bg-[#f8f9fa] px-2 text-[11px] font-semibold text-navy shadow-2xs">
+            <span>⌘</span>
+            <span>K</span>
           </kbd>
         </div>
       </div>
