@@ -1,16 +1,15 @@
 import { fail, ok } from "@/lib/api"
+import { isAdminRequest } from "@/lib/auth"
 import { updateBookingStatus } from "@/lib/db/bookings"
 import { BOOKING_STATUSES } from "@/types/booking"
 import { updateBookingStatusSchema } from "@/lib/validation"
 
-/**
- * PATCH /api/bookings/:id — update booking status (PRD §30).
- * Example body: { "status": "approved" }
- */
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  if (!(await isAdminRequest(request))) return fail("Unauthorized", 401)
+
   try {
     const { id } = await params
     const body = await request.json()

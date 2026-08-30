@@ -1,14 +1,5 @@
-/**
- * Admin session — HMAC-SHA256 signed cookie token.
- *
- * Uses Web Crypto (crypto.subtle) so the same code runs in the
- * Node runtime (login route) and the Proxy runtime (route guard).
- * No dependencies, and crypto.subtle.verify compares signatures
- * in constant time.
- */
-
 export const SESSION_COOKIE = "admin_session"
-export const SESSION_MAX_AGE = 60 * 60 * 24 * 7 // 7 days
+export const SESSION_MAX_AGE = 60 * 60 * 24 * 7
 
 function getSecret(): string {
   const secret = process.env.AUTH_SECRET
@@ -27,7 +18,6 @@ async function hmac(payload: string): Promise<ArrayBuffer> {
   return crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload))
 }
 
-/** Token shape: "<expiry-epoch>.<hex-signature-of-expiry>" */
 export async function createSessionToken(): Promise<string> {
   const expiry = Math.floor(Date.now() / 1000) + SESSION_MAX_AGE
   const signature = await hmac(expiry.toString())
@@ -40,8 +30,6 @@ export async function verifySessionToken(token: string | undefined): Promise<boo
 
   const [expiry, hex] = token.split(".")
   if (!expiry || !hex) return false
-
-  // expired?
   if (Number(expiry) < Math.floor(Date.now() / 1000)) return false
 
   const key = await crypto.subtle.importKey(
@@ -56,9 +44,26 @@ export async function verifySessionToken(token: string | undefined): Promise<boo
   return crypto.subtle.verify("HMAC", key, bytes, new TextEncoder().encode(expiry))
 }
 
-/** True when the given credentials match the env-configured admin. */
+function safeEqual(a: string, b: string): boolean {
+  if (!a || !b || a.length !== b.length) return false
+  let diff = 0
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i)
+  return diff === 0
+}
+
 export function isAdminCredentials(email: string, password: string): boolean {
-  return (
-    email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD
-  )
+  return safeEqual(email, process.env.ADMIN_EMAIL ?? "") && safeEqual(password, process.env.ADMIN_PASSWORD ?? "")
+}
+
+export function getSessionTokenFromRequest(request: Request): string | undefined {
+  return request.headers
+    .get("cookie")
+    ?.split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(`${SESSION_COOKIE}=`))
+    ?.slice(SESSION_COOKIE.length + 1)
+}
+
+export async function isAdminRequest(request: Request): Promise<boolean> {
+  return verifySessionToken(getSessionTokenFromRequest(request))
 }

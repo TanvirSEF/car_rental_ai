@@ -1,10 +1,10 @@
 import { fail, ok } from "@/lib/api"
+import { isAdminRequest } from "@/lib/auth"
 import { getDashboardStats } from "@/lib/db/dashboard"
 
-/**
- * GET /api/dashboard/stats — KPIs, revenue trend and category mix (PRD §31).
- */
-export async function GET() {
+export async function GET(request: Request) {
+  if (!(await isAdminRequest(request))) return fail("Unauthorized", 401)
+
   try {
     const stats = await getDashboardStats()
     return ok(stats)

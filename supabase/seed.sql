@@ -3,6 +3,8 @@
 -- Run AFTER schema.sql
 -- ============================================================
 
+truncate table public.bookings, public.cars cascade;
+
 -- ------------------------------------------------------------
 -- 12 vehicles across all categories
 -- (Unsplash placeholder images — swap anytime)

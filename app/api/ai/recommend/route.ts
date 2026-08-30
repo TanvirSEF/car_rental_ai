@@ -4,7 +4,11 @@ import { fail, ok } from "@/lib/api"
 import { recommendVehicles } from "@/lib/ai/recommend"
 
 const recommendSchema = z.object({
-  message: z.string().min(5, "Please describe what kind of car you need"),
+  message: z
+    .string()
+    .trim()
+    .min(5, "Please describe what kind of car you need")
+    .max(500, "Please keep your request under 500 characters"),
 })
 
 /**

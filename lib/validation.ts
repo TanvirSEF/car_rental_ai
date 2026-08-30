@@ -3,19 +3,26 @@ import { z } from "zod"
 import { BOOKING_STATUSES } from "@/types/booking"
 import { CAR_STATUSES } from "@/types/car"
 
-/**
- * Zod schemas for API input validation (PRD §53).
- */
+const today = () => new Date().toISOString().slice(0, 10)
 
-export const createBookingSchema = z.object({
-  carId: z.uuid("Valid vehicle id is required"),
-  customerName: z.string().min(2, "Customer name is required"),
-  email: z.email("Valid email is required"),
-  phone: z.string().min(6, "Valid phone number is required"),
-  pickupLocation: z.string().min(2).optional(),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date(),
-})
+export const createBookingSchema = z
+  .object({
+    carId: z.uuid("Valid vehicle id is required"),
+    customerName: z.string().min(2, "Customer name is required").max(80),
+    email: z.email("Valid email is required").max(120),
+    phone: z.string().min(6, "Valid phone number is required").max(30),
+    pickupLocation: z.string().min(2).max(120).optional(),
+    startDate: z.iso.date(),
+    endDate: z.iso.date(),
+  })
+  .refine((data) => data.endDate > data.startDate, {
+    error: "Return date must be after the pick-up date",
+    path: ["endDate"],
+  })
+  .refine((data) => data.startDate >= today(), {
+    error: "Pick-up date cannot be in the past",
+    path: ["startDate"],
+  })
 
 export const updateBookingStatusSchema = z.object({
   status: z.enum(BOOKING_STATUSES),

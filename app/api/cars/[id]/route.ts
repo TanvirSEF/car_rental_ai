@@ -1,11 +1,9 @@
 import { fail, ok } from "@/lib/api"
+import { isAdminRequest } from "@/lib/auth"
 import { getCarById, updateCarStatus } from "@/lib/db/cars"
 import { CAR_STATUSES } from "@/types/car"
 import { updateCarStatusSchema } from "@/lib/validation"
 
-/**
- * GET /api/cars/:id — single vehicle (PRD §28).
- */
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -23,14 +21,12 @@ export async function GET(
   }
 }
 
-/**
- * PATCH /api/cars/:id — fleet status update (PRD §24).
- * Example body: { "status": "maintenance" }
- */
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  if (!(await isAdminRequest(request))) return fail("Unauthorized", 401)
+
   try {
     const { id } = await params
     const body = await request.json()

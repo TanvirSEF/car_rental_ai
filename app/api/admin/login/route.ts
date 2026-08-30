@@ -18,23 +18,29 @@ const loginSchema = z.object({
   password: z.string().min(1),
 })
 
-// tiny in-memory rate limit: 5 failed attempts per minute per IP
 const attempts = new Map<string, { count: number; resetAt: number }>()
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now()
   const entry = attempts.get(ip)
 
-  if (!entry || entry.resetAt < now) {
-    attempts.set(ip, { count: 0, resetAt: now + 60_000 })
+  if (!entry) return false
+  if (entry.resetAt < now) {
+    attempts.delete(ip)
     return false
   }
   return entry.count >= 5
 }
 
 function recordFailure(ip: string) {
+  const now = Date.now()
   const entry = attempts.get(ip)
-  if (entry) entry.count += 1
+
+  if (!entry || entry.resetAt < now) {
+    attempts.set(ip, { count: 1, resetAt: now + 60_000 })
+    return
+  }
+  entry.count += 1
 }
 
 export async function POST(request: Request) {

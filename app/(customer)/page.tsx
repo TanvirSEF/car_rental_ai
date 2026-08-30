@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic"
  * structure with a premium visual layer. Vehicle data is live.
  */
 export default async function HomePage() {
-  const cars = await getCars()
+  const cars = await getCars({ status: "available" })
 
   return (
     <>

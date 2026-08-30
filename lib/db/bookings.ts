@@ -2,11 +2,9 @@ import { getSupabase } from "@/lib/supabase/client"
 import type { Booking, BookingStatus, BookingWithCar } from "@/types/booking"
 import type { Car } from "@/types/car"
 
-/**
- * Data access + business logic for bookings.
- */
-
 const DAY_MS = 24 * 60 * 60 * 1000
+
+export class BookingConflictError extends Error {}
 
 export function calcRentalDays(startDate: string, endDate: string): number {
   const start = new Date(startDate).getTime()
@@ -38,15 +36,9 @@ interface CreateBookingArgs {
   endDate: string
 }
 
-/**
- * Creates a pending booking request (PRD §13, §29).
- * Price is always calculated server-side from the car's daily rate —
- * never trusted from the client (PRD §15, §52).
- */
 export async function createBooking(args: CreateBookingArgs): Promise<Booking> {
   const supabase = getSupabase()
 
-  // 1. vehicle must exist and not be in maintenance
   const { data: car, error: carError } = await supabase
     .from("cars")
     .select("*")
@@ -55,13 +47,25 @@ export async function createBooking(args: CreateBookingArgs): Promise<Booking> {
 
   if (carError || !car) throw new Error("Vehicle not found")
   if (car.status === "maintenance")
-    throw new Error("This vehicle is currently under maintenance")
+    throw new BookingConflictError("This vehicle is currently under maintenance")
 
-  // 2. dynamic pricing
+  const { data: overlapping } = await supabase
+    .from("bookings")
+    .select("id")
+    .eq("car_id", args.carId)
+    .in("status", ["pending", "approved", "active"])
+    .lte("start_date", args.endDate)
+    .gte("end_date", args.startDate)
+    .limit(1)
+
+  if (overlapping && overlapping.length > 0)
+    throw new BookingConflictError(
+      "This vehicle is already booked for the selected dates"
+    )
+
   const totalDays = calcRentalDays(args.startDate, args.endDate)
   const totalPrice = totalDays * Number(car.price_per_day)
 
-  // 3. create the booking record
   const { data, error } = await supabase
     .from("bookings")
     .insert({
@@ -83,11 +87,6 @@ export async function createBooking(args: CreateBookingArgs): Promise<Booking> {
   return data as Booking
 }
 
-/**
- * Updates a booking status and keeps the fleet in sync:
- * active booking → car becomes "rented",
- * completed/cancelled → car returns to "available" (PRD §24, §25).
- */
 export async function updateBookingStatus(
   id: string,
   status: BookingStatus
@@ -106,10 +105,23 @@ export async function updateBookingStatus(
     throw new Error(error.message)
   }
 
-  // fleet sync — best effort, never blocks the status update
-  const carStatus = status === "active" ? "rented" : status === "completed" || status === "cancelled" ? "available" : null
-  if (carStatus) {
-    await supabase.from("cars").update({ status: carStatus }).eq("id", data.car_id)
+  if (status === "active") {
+    await supabase.from("cars").update({ status: "rented" }).eq("id", data.car_id)
+  } else if (status === "completed" || status === "cancelled") {
+    const { data: stillActive } = await supabase
+      .from("bookings")
+      .select("id")
+      .eq("car_id", data.car_id)
+      .eq("status", "active")
+      .neq("id", data.id)
+      .limit(1)
+
+    if (!stillActive?.length) {
+      await supabase
+        .from("cars")
+        .update({ status: "available" })
+        .eq("id", data.car_id)
+    }
   }
 
   return data as Booking

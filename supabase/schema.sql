@@ -78,10 +78,13 @@ create trigger trg_bookings_updated_at
   for each row execute function public.set_updated_at();
 
 -- ------------------------------------------------------------
--- API access for anon / authenticated roles
--- (self-hosted Supabase usually grants these by default,
---  explicit grants keep it working regardless)
+-- Row Level Security: the app talks to the database exclusively
+-- through server-side code using the service role key, so anon
+-- and authenticated roles get no direct access at all.
 -- ------------------------------------------------------------
-grant usage on schema public to anon, authenticated;
-grant select, insert, update, delete on public.cars to anon, authenticated;
-grant select, insert, update, delete on public.bookings to anon, authenticated;
+alter table public.cars enable row level security;
+alter table public.bookings enable row level security;
+
+revoke all on public.cars from anon, authenticated;
+revoke all on public.bookings from anon, authenticated;
+revoke usage on schema public from anon, authenticated;

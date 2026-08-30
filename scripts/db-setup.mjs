@@ -17,11 +17,11 @@ for (const line of readFileSync(join(root, ".env"), "utf8").split(/\r?\n/)) {
   process.env[line.slice(0, idx).trim()] = line.slice(idx + 1).trim();
 }
 
-const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const base = process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!base || !serviceKey) {
-  console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env");
+  console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env");
   process.exit(1);
 }
 
