@@ -1,8 +1,9 @@
 "use client"
 
+import Image from "next/image"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
-import { Car, LoaderCircle, Lock, Mail } from "lucide-react"
+import { LoaderCircle, Lock, Mail } from "lucide-react"
 
 /**
  * Admin login form — posts credentials to /api/admin/login,
@@ -48,13 +49,8 @@ export function LoginForm() {
   return (
     <div className="w-full max-w-sm rounded-xl border border-line bg-white p-8 shadow-sm">
       <div className="mb-8 flex flex-col items-center gap-3 text-center">
-        <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand text-white">
-          <Car size={22} />
-        </span>
-        <div>
-          <h1 className="font-nunito text-xl font-extrabold text-navy">Digital Pylot</h1>
-          <p className="mt-1 text-sm text-ink-soft">Admin Dashboard Login</p>
-        </div>
+        <Image src="/Logo.png" alt="Best Car" width={115} height={36} priority />
+        <p className="text-sm text-ink-soft">Admin Dashboard Login</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">

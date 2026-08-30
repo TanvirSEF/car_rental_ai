@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef } from "react"
 import {
@@ -16,10 +17,18 @@ import {
   Settings,
 } from "lucide-react"
 
+import { cn } from "@/lib/utils"
+
 const iconBtn =
   "flex h-[34px] w-[34px] items-center justify-center text-ink-soft transition-colors hover:text-navy"
 
-export function Header({ onMenu }: { onMenu: () => void }) {
+export function Header({
+  onMenu,
+  collapsed,
+}: {
+  onMenu: () => void
+  collapsed: boolean
+}) {
   const searchRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -42,17 +51,17 @@ export function Header({ onMenu }: { onMenu: () => void }) {
     <header className="sticky top-0 z-30 flex h-[65px] items-center gap-3 border-b border-line bg-white px-4 sm:px-6 lg:px-8">
       <button
         onClick={onMenu}
-        className="rounded-md p-2 text-navy hover:bg-brand-soft lg:hidden"
+        className={cn(
+          "flex h-[34px] w-[34px] items-center justify-center rounded-[10px] bg-[#fafafa] text-ink-soft transition-colors hover:text-navy",
+          !collapsed && "lg:hidden"
+        )}
         aria-label="Open menu"
       >
-        <Menu size={20} />
+        <Menu size={16} />
       </button>
 
-      <Link href="/admin" className="flex items-center gap-2 lg:hidden">
-        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-brand text-white">
-          <Car size={14} />
-        </span>
-        <span className="font-extrabold text-navy">Digital Pylot</span>
+      <Link href="/admin" className="lg:hidden">
+        <Image src="/Logo.png" alt="Best Car" width={96} height={30} priority />
       </Link>
 
       <div className="hidden h-[39px] w-[230px] items-center gap-2 rounded-lg border border-line bg-white px-3 xl:flex">

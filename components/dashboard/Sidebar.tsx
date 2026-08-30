@@ -1,10 +1,12 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   CalendarRange,
   Car,
+  ChevronLeft,
   ChevronRight,
   LayoutDashboard,
   Users,
@@ -47,7 +49,17 @@ const MENU_GROUPS: { label: string; items: MenuItem[] }[] = [
   },
 ]
 
-export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function Sidebar({
+  open,
+  onClose,
+  collapsed,
+  onToggleCollapse,
+}: {
+  open: boolean
+  onClose: () => void
+  collapsed: boolean
+  onToggleCollapse: () => void
+}) {
   const pathname = usePathname()
 
   const isActive = (href: string, exact?: boolean) =>
@@ -66,20 +78,23 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[252px] flex-col border-r border-line bg-white transition-transform lg:translate-x-0",
-          open ? "translate-x-0" : "-translate-x-full"
+          "fixed inset-y-0 left-0 z-50 flex w-[252px] flex-col border-r border-line bg-white transition-transform",
+          open ? "translate-x-0" : "-translate-x-full",
+          !collapsed && "lg:translate-x-0"
         )}
       >
         {/* Title */}
         <div className="flex h-[65px] items-center justify-between border-b border-line px-4">
-          <Link href="/admin" className="flex items-center gap-2" onClick={onClose}>
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-white">
-              <Car size={18} />
-            </span>
-            <span className="font-nunito text-lg font-extrabold text-navy">
-              Digital Pylot
-            </span>
+          <Link href="/admin" onClick={onClose}>
+            <Image src="/Logo.png" alt="Best Car" width={115} height={36} priority />
           </Link>
+          <button
+            onClick={onToggleCollapse}
+            className="hidden h-[26px] w-[26px] items-center justify-center rounded-full bg-brand-orange text-white transition-opacity hover:opacity-90 lg:flex"
+            aria-label="Collapse sidebar"
+          >
+            <ChevronLeft size={14} />
+          </button>
           <button
             className="rounded-md p-1 text-ink-muted hover:bg-brand-soft lg:hidden"
             onClick={onClose}
