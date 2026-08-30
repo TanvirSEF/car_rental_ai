@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Car as CarIcon } from "lucide-react"
+import { Car as CarIcon, Plus } from "lucide-react"
 
+import { AddVehicleModal } from "@/components/dashboard/AddVehicleModal"
 import { StatusBadge } from "@/components/dashboard/StatusBadge"
 import type { Car, CarStatus } from "@/types/car"
 
@@ -15,6 +16,7 @@ export function FleetTable({ initialCars }: { initialCars: Car[] }) {
   const [cars, setCars] = useState(initialCars)
   const [savingId, setSavingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [showAdd, setShowAdd] = useState(false)
 
   async function changeStatus(id: string, status: CarStatus) {
     setSavingId(id)
@@ -40,11 +42,30 @@ export function FleetTable({ initialCars }: { initialCars: Car[] }) {
 
   return (
     <div className="overflow-hidden rounded-lg border border-line bg-white">
-      <div className="flex items-center justify-between border-b border-line px-5 py-4">
+      {showAdd && (
+        <AddVehicleModal
+          onClose={() => setShowAdd(false)}
+          onCreated={(car) => {
+            setCars((list) => [car, ...list])
+            setShowAdd(false)
+          }}
+        />
+      )}
+
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
         <h2 className="flex items-center gap-2 text-lg font-bold text-ink">
           <CarIcon size={18} className="text-brand" /> Fleet Management
         </h2>
-        <span className="text-sm text-ink-soft">{cars.length} vehicles</span>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-ink-soft">{cars.length} vehicles</span>
+          <button
+            onClick={() => setShowAdd(true)}
+            className="flex h-9 items-center gap-1.5 rounded-full bg-brand-orange px-4 text-[13px] font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            <Plus size={15} />
+            Add Vehicle
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -70,12 +91,20 @@ export function FleetTable({ initialCars }: { initialCars: Car[] }) {
               <tr key={car.id} className="hover:bg-[#fafafa]">
                 <td className="px-5 py-3">
                   <div className="flex items-center gap-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={car.image_url ?? ""}
-                      alt={`${car.brand} ${car.name}`}
-                      className="h-10 w-14 rounded-md object-cover"
-                    />
+                    <div className="h-10 w-14 shrink-0 overflow-hidden rounded-md bg-brand-soft">
+                      {car.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={car.image_url}
+                          alt={`${car.brand} ${car.name}`}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-brand">
+                          {car.brand.slice(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
                     <div>
                       <p className="font-semibold text-ink">
                         {car.brand} {car.name}

@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 import { BOOKING_STATUSES } from "@/types/booking"
-import { CAR_STATUSES } from "@/types/car"
+import { CAR_CATEGORIES, CAR_STATUSES, TRANSMISSIONS } from "@/types/car"
 
 const today = () => new Date().toISOString().slice(0, 10)
 
@@ -40,4 +40,19 @@ export const carFilterSchema = z.object({
   transmission: z.string().optional(),
   seats: z.coerce.number().int().positive().optional(),
   status: z.string().optional(),
+})
+
+export const createCarSchema = z.object({
+  name: z.string().trim().min(2, "Vehicle name is required").max(60),
+  brand: z.string().trim().min(2, "Brand is required").max(60),
+  category: z.enum(CAR_CATEGORIES),
+  transmission: z.enum(TRANSMISSIONS),
+  fuelType: z.string().trim().min(2, "Fuel type is required").max(40),
+  seats: z.coerce.number().int().min(2, "At least 2 seats").max(20),
+  pricePerDay: z.coerce
+    .number()
+    .positive("Price per day must be positive")
+    .max(10000, "Price per day is too high"),
+  imageUrl: z.url("Image URL must be valid").max(500).optional().or(z.literal("")),
+  description: z.string().trim().max(500).optional(),
 })

@@ -1,5 +1,5 @@
 import { getSupabase } from "@/lib/supabase/client"
-import type { Car, CarFilters, CarStatus } from "@/types/car"
+import type { Car, CarCategory, CarFilters, CarStatus, Transmission } from "@/types/car"
 
 /**
  * Data access for vehicles (used by /api/cars routes).
@@ -23,6 +23,40 @@ export async function getCars(filters: CarFilters = {}): Promise<Car[]> {
 
   if (error) throw new Error(error.message)
   return data as Car[]
+}
+
+interface CreateCarArgs {
+  name: string
+  brand: string
+  category: CarCategory
+  transmission: Transmission
+  fuelType: string
+  seats: number
+  pricePerDay: number
+  imageUrl?: string
+  description?: string
+}
+
+export async function createCar(args: CreateCarArgs): Promise<Car> {
+  const { data, error } = await getSupabase()
+    .from("cars")
+    .insert({
+      name: args.name,
+      brand: args.brand,
+      category: args.category,
+      transmission: args.transmission,
+      fuel_type: args.fuelType,
+      seats: args.seats,
+      price_per_day: args.pricePerDay,
+      image_url: args.imageUrl || null,
+      description: args.description || null,
+      status: "available",
+    })
+    .select("*")
+    .single()
+
+  if (error) throw new Error(error.message)
+  return data as Car
 }
 
 export async function getCarById(id: string): Promise<Car | null> {

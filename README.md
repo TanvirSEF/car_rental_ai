@@ -67,6 +67,7 @@ pnpm dev
 | Endpoint | Method | Access |
 |---|---|---|
 | `/api/cars` | GET | public (supports filters) |
+| `/api/cars` | POST | admin session |
 | `/api/cars/:id` | GET | public |
 | `/api/cars/:id` | PATCH | admin session |
 | `/api/bookings` | POST | public |
